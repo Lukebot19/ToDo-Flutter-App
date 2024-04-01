@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:todo_app/constants/colours.dart';
+import 'package:todo_app/models/note.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,6 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  getRandomColour() {
+    Random random = Random();
+    return backgroundColours[random.nextInt(backgroundColours.length)];
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,53 +78,63 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Expanded(
-                  child: ListView(
-                children: [
-                  Card(
+                  child: ListView.builder(
+                padding: const EdgeInsets.only(top: 30),
+                itemCount: sampleNotes.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    color: getRandomColour(),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ListTile(
-                      title: RichText(
-                        text: const TextSpan(
-                            text: 'Like and Subscribe\n',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              height: 1.5,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: 'Thank you!!!',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 14,
-                                    height: 1.5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListTile(
+                        title: RichText(
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                              text: '${sampleNotes[index].title}\n',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                height: 1.5,
                               ),
-                            ]),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          'Edited: 20/12/2023',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.grey.shade800,
+                              children: [
+                                TextSpan(
+                                  text: sampleNotes[index].content,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14,
+                                      height: 1.5),
+                                ),
+                              ]),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            DateFormat('EEE MMM d, yyyy h:mm a')
+                                .format(sampleNotes[index].modifiedTime),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.delete,
                           ),
                         ),
                       ),
-                      trailing: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.delete,
-                        ),
-                      ),
                     ),
-                  )
-                ],
+                  );
+                },
               )),
             ],
           ),
