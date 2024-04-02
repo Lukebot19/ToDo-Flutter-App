@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/constants/colours.dart';
 import 'package:todo_app/models/note.dart';
@@ -44,6 +45,14 @@ class _HomeScreenState extends State<HomeScreen> {
               note.content.toLowerCase().contains(searchText.toLowerCase()) ||
               note.title.toLowerCase().contains(searchText.toLowerCase()))
           .toList();
+    });
+  }
+
+  void deleteNote(int index) {
+    setState(() {
+      Note note = filteredNotes[index];
+      sampleNotes.remove(note);
+      filteredNotes.removeAt(index);
     });
   }
 
@@ -160,7 +169,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         trailing: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final result = await confirmationDialog(context);
+                            if (result != null && result) {
+                              deleteNote(index);
+                            }
+                          },
                           icon: const Icon(
                             Icons.delete,
                           ),
@@ -183,5 +197,63 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> confirmationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              backgroundColor: Colors.grey.shade900,
+              icon: const Icon(
+                Icons.info,
+                color: Colors.grey,
+              ),
+              title: const Text(
+                "Are you sure you want to delete?",
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const SizedBox(
+                      width: 60,
+                      child: Text(
+                        "Yes",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const SizedBox(
+                      width: 60,
+                      child: Text(
+                        "No",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ));
+        });
   }
 }
