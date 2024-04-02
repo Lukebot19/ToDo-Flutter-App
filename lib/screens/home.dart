@@ -13,9 +13,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Note> filteredNotes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredNotes = sampleNotes;
+  }
+
   getRandomColour() {
     Random random = Random();
     return backgroundColours[random.nextInt(backgroundColours.length)];
+  }
+
+  void onSearchTextChanged(String searchText) {
+    setState(() {
+      filteredNotes = sampleNotes
+          .where((note) =>
+              note.content.toLowerCase().contains(searchText.toLowerCase()) ||
+              note.title.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
@@ -59,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
               TextField(
+                onChanged: onSearchTextChanged,
                 style: const TextStyle(fontSize: 16, color: Colors.white),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -80,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                   child: ListView.builder(
                 padding: const EdgeInsets.only(top: 30),
-                itemCount: sampleNotes.length,
+                itemCount: filteredNotes.length,
                 itemBuilder: (context, index) {
                   return Card(
                     margin: const EdgeInsets.only(bottom: 20),
@@ -95,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
-                              text: '${sampleNotes[index].title}\n',
+                              text: '${filteredNotes[index].title}\n',
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -104,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: sampleNotes[index].content,
+                                  text: filteredNotes[index].content,
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.normal,
@@ -117,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             DateFormat('EEE MMM d, yyyy h:mm a')
-                                .format(sampleNotes[index].modifiedTime),
+                                .format(filteredNotes[index].modifiedTime),
                             style: TextStyle(
                               fontSize: 10,
                               fontStyle: FontStyle.italic,
