@@ -14,11 +14,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Note> filteredNotes = [];
+  bool sorted = false;
 
   @override
   void initState() {
     super.initState();
     filteredNotes = sampleNotes;
+  }
+
+  sortNotesByModifiedTime(List<Note> notes) {
+    if (sorted) {
+      notes.sort((a, b) => a.modifiedTime.compareTo(b.modifiedTime));
+    } else {
+      notes.sort((a, b) => b.modifiedTime.compareTo(a.modifiedTime));
+    }
+    sorted = !sorted;
+    return notes;
   }
 
   getRandomColour() {
@@ -58,7 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(fontSize: 30, color: Colors.white),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        filteredNotes = sortNotesByModifiedTime(filteredNotes);
+                      });
+                    },
                     padding: const EdgeInsets.all(0),
                     icon: Container(
                       width: 40,
