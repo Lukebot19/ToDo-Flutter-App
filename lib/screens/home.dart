@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/constants/colours.dart';
 import 'package:todo_app/models/note.dart';
+import 'package:todo_app/screens/edit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -188,7 +189,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => EditScreen(),
+              ),
+            );
+            if (result != null) {
+              setState(() {
+                sampleNotes.add(
+                  Note(
+                    id: sampleNotes.length,
+                    title: result[0],
+                    content: result[1],
+                    modifiedTime: DateTime.now(),
+                  ),
+                );
+                filteredNotes = sampleNotes;
+              });
+            }
+          },
           backgroundColor: Colors.grey.shade800,
           child: const Icon(
             Icons.add,
