@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../models/note.dart';
+
 class EditScreen extends StatefulWidget {
-  const EditScreen({super.key});
+  final Note? note;
+  const EditScreen({super.key, this.note});
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -10,6 +13,16 @@ class EditScreen extends StatefulWidget {
 class _EditScreenState extends State<EditScreen> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.note != null) {
+      _titleController = TextEditingController(text: widget.note!.title);
+      _contentController = TextEditingController(text: widget.note!.content);
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +70,7 @@ class _EditScreenState extends State<EditScreen> {
                     ),
                   ),
                   TextField(
+                    maxLength: null,
                     controller: _contentController,
                     style: const TextStyle(
                       color: Colors.white,

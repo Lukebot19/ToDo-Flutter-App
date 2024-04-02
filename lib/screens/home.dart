@@ -135,6 +135,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: ListTile(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => EditScreen(
+                                note: filteredNotes[index],
+                              ),
+                            ),
+                          );
+                          if (result != null) {
+                            setState(() {
+                              int ogIndex =
+                                  sampleNotes.indexOf(filteredNotes[index]);
+                              sampleNotes[ogIndex] = Note(
+                                id: sampleNotes[ogIndex].id,
+                                title: result[0],
+                                content: result[1],
+                                modifiedTime: DateTime.now(),
+                              );
+                              filteredNotes[ogIndex] = Note(
+                                id: filteredNotes[ogIndex].id,
+                                title: result[0],
+                                content: result[1],
+                                modifiedTime: DateTime.now(),
+                              );
+                            });
+                          }
+                        },
                         title: RichText(
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
